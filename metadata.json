@@ -1,0 +1,6 @@
+{
+  "name": "Interactive 3D Video Landing Page",
+  "description": "A modern, highly interactive landing page built with React, Vite, Tailwind CSS, and Framer Motion, featuring a 3D fish animation and expandable video.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
