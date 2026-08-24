@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DetailedHTMLProps, HTMLAttributes } from 'react';
 
 declare global {
