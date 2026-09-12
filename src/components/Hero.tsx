@@ -1,25 +1,5 @@
 import { motion } from 'motion/react';
 import { ArrowDown } from 'lucide-react';
-import { DetailedHTMLProps, HTMLAttributes } from 'react';
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'model-viewer': DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & { 
-        src?: string; 
-        alt?: string; 
-        'auto-rotate'?: boolean | string; 
-        'camera-controls'?: boolean | string; 
-        'touch-action'?: string;
-        'shadow-intensity'?: string;
-        ar?: boolean | string;
-        autoplay?: boolean | string;
-        'animation-name'?: string;
-        class?: string;
-      };
-    }
-  }
-}
 
 export function Hero() {
   return (

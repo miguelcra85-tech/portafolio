@@ -74,7 +74,11 @@ export function Carousel() {
                 <div className="relative h-full w-full overflow-hidden">
                   <img 
                     src={project.image} 
-                    alt={project.title} 
+                    alt={`Proyecto ${project.title} - ${project.category}`} 
+                    loading="lazy"
+                    decoding="async"
+                    width="600"
+                    height="750"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   {/* Overlay removed to let the light pass and only show the image */}

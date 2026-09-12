@@ -37,7 +37,14 @@ export default function App() {
           transition={{ duration: 0.8 }}
           className="absolute top-8 left-6 md:left-16 z-30"
         >
-          <img src={LOGO_URL} alt="Migue Strategy Logo" className="h-12 w-auto object-contain drop-shadow-md" />
+          <img 
+            src={LOGO_URL} 
+            alt="Migue Strategy Logo" 
+            width="160"
+            height="48"
+            fetchPriority="high"
+            className="h-12 w-auto object-contain drop-shadow-md" 
+          />
         </motion.div>
 
         <Hero />
