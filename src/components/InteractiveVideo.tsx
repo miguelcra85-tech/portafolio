@@ -2,7 +2,29 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, X } from 'lucide-react';
 
-export function InteractiveVideo() {
+export interface InteractiveVideoProps {
+  /**
+   * URL del video. Soporta MP4, WebM o enlaces CDN directos.
+   * Puedes pasar tu propio link aquí.
+   */
+  src?: string;
+  glowColor?: string;
+  width?: string;
+  height?: string;
+  className?: string;
+  label?: string;
+  badge?: string;
+}
+
+export function InteractiveVideo({
+  src = "https://res.cloudinary.com/hw31kdln/video/upload/v1790005612/Presentaci%C3%B3n_Animaci%C3%B3n_s3ukg4.mp4",
+  glowColor = "#ff9d3d",
+  width = "w-[280px] md:w-[320px]",
+  height = "h-[170px] md:h-[190px]",
+  className = "",
+  label = "Reproducir video",
+  badge,
+}: InteractiveVideoProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -78,7 +100,10 @@ export function InteractiveVideo() {
       </AnimatePresence>
 
       {/* Video Container (Placeholder in document flow) */}
-      <div className={`relative w-[280px] h-[160px] mx-auto ${isExpanded ? 'z-50' : 'z-10'}`} style={{ perspective: '1000px' }}>
+      <div 
+        className={`relative ${width} ${height} mx-auto ${isExpanded ? 'z-50' : 'z-10'} ${className}`} 
+        style={{ perspective: '1000px' }}
+      >
         <motion.div
           layout
           onMouseMove={handleMouseMove}
@@ -106,27 +131,36 @@ export function InteractiveVideo() {
               : 'fixed top-[50%] left-[50%] w-[90vw] md:w-[75vw] h-[75vh] cursor-default z-50'
           }`}
         >
-          {/* Intense Warm Glow Effect (Pushed behind in 3D) */}
+          {/* Intense Warm/Electric Glow Effect (Pushed behind in 3D) */}
           <motion.div
             animate={{
               opacity: isExpanded ? 0.4 : (isHovered ? 0.9 : 0.5),
               scale: isExpanded ? 1.05 : (isHovered ? 1.15 : 1)
             }}
             transition={{ duration: 0.3 }}
-            className={`absolute inset-0 bg-[#ff9d3d] rounded-2xl ${
+            className={`absolute inset-0 rounded-2xl ${
               isExpanded ? 'blur-[60px]' : 'blur-[40px]'
             }`}
-            style={{ transform: 'translateZ(-10px)' }}
+            style={{ 
+              backgroundColor: glowColor,
+              transform: 'translateZ(-10px)' 
+            }}
           />
 
           {/* Video Element Wrapper */}
           <div 
-            className="relative w-full h-full overflow-hidden rounded-2xl bg-black border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+            className="relative w-full h-full overflow-hidden rounded-2xl bg-black border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
             style={{ transform: 'translateZ(1px)' }}
           >
+            {badge && !isExpanded && (
+              <div className="absolute top-3 left-3 z-30 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-geist font-semibold text-white/90 uppercase tracking-widest pointer-events-none">
+                {badge}
+              </div>
+            )}
+
             <video
               ref={videoRef}
-              src="https://res.cloudinary.com/hw31kdln/video/upload/v1787452366/Presentaci%C3%B3n_animaci%C3%B3n_eededd.mp4"
+              src={src}
               className="w-full h-full object-cover"
               preload="metadata"
               onEnded={handleClose}
@@ -141,14 +175,17 @@ export function InteractiveVideo() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 z-20 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors pointer-events-none"
+                  className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors pointer-events-none gap-2"
                 >
                   <button
-                    aria-label="Reproducir video"
+                    aria-label={label}
                     className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 text-white shadow-lg pointer-events-none transition-transform duration-300 group-hover:scale-110"
                   >
                     <Play className="w-6 h-6 ml-1 drop-shadow-md" fill="currentColor" />
                   </button>
+                  <span className="text-[11px] font-geist font-medium text-white/80 tracking-wider uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    {label}
+                  </span>
                 </motion.div>
               )}
             </AnimatePresence>

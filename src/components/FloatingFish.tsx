@@ -53,10 +53,11 @@ export function FloatingFish() {
         style={{ willChange: 'transform', transformStyle: 'preserve-3d' }}
       >
         {/* 
-          The fish is offset by -50% of its size so its true center follows the exact (x, y) coordinates.
-          pointer-events-auto allows native <model-viewer> camera-controls to respond to cursor interactions.
+          El pez se centra con offset de -50% de sus dimensiones.
+          Se amplía el contenedor y se configura bounds="loose" junto con camera-orbit al 130%
+          para que la cola del pez tenga suficiente espacio durante la animación "Swim" y no se corte.
         */}
-        <div className="absolute left-[-125px] top-[-125px] w-[250px] h-[250px] md:left-[-175px] md:top-[-175px] md:w-[350px] md:h-[350px] pointer-events-auto cursor-grab active:cursor-grabbing">
+        <div className="absolute left-[-175px] top-[-175px] w-[350px] h-[350px] md:left-[-250px] md:top-[-250px] md:w-[500px] md:h-[500px] pointer-events-auto cursor-grab active:cursor-grabbing">
           <model-viewer 
             src="https://res.cloudinary.com/hw31kdln/image/upload/v1786818163/fish_2_nlhvcv.glb" 
             alt="Modelo 3D Pez"
@@ -64,6 +65,11 @@ export function FloatingFish() {
             camera-controls 
             touch-action="pan-y"
             shadow-intensity="1"
+            bounds="loose"
+            camera-orbit="auto auto 130%"
+            min-camera-orbit="auto auto 60%"
+            max-camera-orbit="auto auto 250%"
+            interaction-prompt="none"
             ar
             autoplay
             animation-name="Swim"

@@ -10,6 +10,13 @@ declare global {
         'camera-controls'?: boolean | string;
         'touch-action'?: string;
         'shadow-intensity'?: string;
+        bounds?: string;
+        'camera-orbit'?: string;
+        'min-camera-orbit'?: string;
+        'max-camera-orbit'?: string;
+        'camera-target'?: string;
+        'field-of-view'?: string;
+        'interaction-prompt'?: string;
         ar?: boolean | string;
         autoplay?: boolean | string;
         'animation-name'?: string;
@@ -29,6 +36,13 @@ declare module 'react' {
         'camera-controls'?: boolean | string;
         'touch-action'?: string;
         'shadow-intensity'?: string;
+        bounds?: string;
+        'camera-orbit'?: string;
+        'min-camera-orbit'?: string;
+        'max-camera-orbit'?: string;
+        'camera-target'?: string;
+        'field-of-view'?: string;
+        'interaction-prompt'?: string;
         ar?: boolean | string;
         autoplay?: boolean | string;
         'animation-name'?: string;

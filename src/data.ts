@@ -45,4 +45,12 @@ export const projects: Project[] = [
 ];
 
 export const LOGO_URL = "https://lh3.googleusercontent.com/aida-public/AB6AXuBS-IG1I--q7SHpDtRMBdahEgyk1-BJmYp-rX4cMRyUJHTYC2iJVAhxivp4XLFwEWp1UiAXBGNbM0SFCkqyKzWXEESH0YvCCwmZ6VvV33nKpPFBIJklwMbFdc9AeWWP4Xmhs-zDgrzyJl-YFboF4qXLo6n3qIS0iGfjV81Toj-eJRjkA4tgHY6w20gcWFlVW5t7JZbAvajEa8ENrOT6i0Ke5ORg7_gTT-ry1B_PiqWZJDtnkBe4ld-PIHTtRBn7k-xwzko";
-export const VIDEO_URL = "https://res.cloudinary.com/hw31kdln/video/upload/v1786312224/Video_de_peces_zh3dgn.mp4";
+export const VIDEO_URL = "https://res.cloudinary.com/hw31kdln/video/upload/v1789971285/Video_De_Peces_uj01mx.webm";
+
+/**
+ * Enlaces para los contenedores de video interactivo (encabezado y cuerpo de la página).
+ * Video comprimido de alta velocidad y menor peso.
+ */
+export const PRESENTATION_VIDEO_URL = "https://res.cloudinary.com/hw31kdln/video/upload/v1790005612/Presentaci%C3%B3n_Animaci%C3%B3n_s3ukg4.mp4";
+export const HEADER_VIDEO_URL = PRESENTATION_VIDEO_URL;
+
