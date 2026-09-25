@@ -60,9 +60,27 @@ export default function App() {
 
         <Hero />
         
-        {/* Interactive Video Presentation (Video con sonido al reproducir, preload="metadata") */}
-        <section className="relative flex justify-center w-full">
-          <InteractiveVideo src={PRESENTATION_VIDEO_URL} />
+        {/* Interactive Video Presentation (Contenedor pequeño que se hace grande al hacer clic) */}
+        <section className="relative flex flex-col items-center justify-center w-full my-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col items-center gap-3 text-center"
+          >
+            <InteractiveVideo 
+              src={PRESENTATION_VIDEO_URL}
+              glowColor="#ff6a00"
+              width="w-[280px] sm:w-[320px] md:w-[350px]"
+              height="h-[165px] sm:h-[185px] md:h-[200px]"
+              badge="Presentación"
+              label="Reproducir Presentación"
+            />
+            <span className="text-[11px] font-geist text-[#8e9192] tracking-wider uppercase text-center max-w-[320px]">
+              Haz clic para ampliar a pantalla completa con sonido
+            </span>
+          </motion.div>
         </section>
 
         {/* Sección de Proyectos con Lazy Loading para acelerar la carga crítica inicial */}

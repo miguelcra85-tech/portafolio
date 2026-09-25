@@ -26,12 +26,11 @@ export function HeaderCardSection() {
               glowColor="#00E5FF"
               width="w-full max-w-[500px]"
               height="h-[250px] sm:h-[280px] lg:h-[300px]"
-              badge="Video Destacado"
               label="Reproducir Video"
               className="w-full"
             />
-            <span className="text-[11px] font-geist text-[#8e9192] tracking-wider uppercase pl-2">
-              Haz clic sobre el video para reproducir en pantalla completa
+            <span className="text-[11px] font-geist text-[#8e9192] tracking-wider uppercase pl-2 text-center lg:text-left">
+              Haz clic sobre el video para reproducir en el centro de la pantalla
             </span>
           </div>
         </motion.div>

@@ -48,9 +48,10 @@ export const LOGO_URL = "https://lh3.googleusercontent.com/aida-public/AB6AXuBS-
 export const VIDEO_URL = "https://res.cloudinary.com/hw31kdln/video/upload/v1789971285/Video_De_Peces_uj01mx.webm";
 
 /**
- * Enlaces para los contenedores de video interactivo (encabezado y cuerpo de la página).
- * Video comprimido de alta velocidad y menor peso.
+ * Enlaces para los contenedores de video interactivo:
+ * - HEADER_VIDEO_URL: video del encabezado
+ * - PRESENTATION_VIDEO_URL: video de presentación del cuerpo de la página
  */
+export const HEADER_VIDEO_URL = "https://res.cloudinary.com/hw31kdln/video/upload/v1790300834/Contenido-1_vilwyp.mp4";
 export const PRESENTATION_VIDEO_URL = "https://res.cloudinary.com/hw31kdln/video/upload/v1790005612/Presentaci%C3%B3n_Animaci%C3%B3n_s3ukg4.mp4";
-export const HEADER_VIDEO_URL = PRESENTATION_VIDEO_URL;
 

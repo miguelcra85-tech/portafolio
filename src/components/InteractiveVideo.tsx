@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Play, X } from 'lucide-react';
+import { Play, X, Volume2 } from 'lucide-react';
 
 export interface InteractiveVideoProps {
   /**
    * URL del video. Soporta MP4, WebM o enlaces CDN directos.
-   * Puedes pasar tu propio link aquí.
    */
   src?: string;
   glowColor?: string;
@@ -28,7 +28,8 @@ export function InteractiveVideo({
   const [isExpanded, setIsExpanded] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const modalVideoRef = useRef<HTMLVideoElement>(null);
+  const previewVideoRef = useRef<HTMLVideoElement>(null);
 
   // Close via Escape key
   useEffect(() => {
@@ -37,6 +38,35 @@ export function InteractiveVideo({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isExpanded]);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isExpanded) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isExpanded]);
+
+  // Auto-play modal video with sound when expanded
+  useEffect(() => {
+    if (isExpanded && modalVideoRef.current) {
+      modalVideoRef.current.currentTime = 0;
+      modalVideoRef.current.muted = false;
+      const playPromise = modalVideoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.warn("Autoplay with sound was prevented, retrying muted:", error);
+          if (modalVideoRef.current) {
+            modalVideoRef.current.muted = true;
+            modalVideoRef.current.play().catch(console.error);
+          }
+        });
+      }
+    }
   }, [isExpanded]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -48,9 +78,9 @@ export function InteractiveVideo({
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    // Max rotation: 15 degrees based on mouse position
-    const rotateX = ((y - centerY) / centerY) * -15;
-    const rotateY = ((x - centerX) / centerX) * 15;
+    // Max rotation: 12 degrees based on mouse position
+    const rotateX = ((y - centerY) / centerY) * -12;
+    const rotateY = ((x - centerX) / centerX) * 12;
 
     setTilt({ x: rotateX, y: rotateY });
   };
@@ -64,153 +94,164 @@ export function InteractiveVideo({
     setIsExpanded(true);
     setIsHovered(false);
     setTilt({ x: 0, y: 0 });
-    
-    // Auto-play the video with audio
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.muted = false;
-      videoRef.current.play().catch(console.error);
-    }
   };
 
   const handleClose = () => {
-    setIsExpanded(false);
-    
-    // Pause and reset video
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
+    if (modalVideoRef.current) {
+      modalVideoRef.current.pause();
+      modalVideoRef.current.currentTime = 0;
     }
+    setIsExpanded(false);
   };
 
   return (
     <>
-      {/* Fullscreen Background Overlay */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md"
-            onClick={handleClose}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Video Container (Placeholder in document flow) */}
+      {/* Inline Interactive Card with 3D Tilt */}
       <div 
-        className={`relative ${width} ${height} mx-auto ${isExpanded ? 'z-50' : 'z-10'} ${className}`} 
+        className={`relative ${width} ${height} mx-auto ${className}`} 
         style={{ perspective: '1000px' }}
       >
         <motion.div
-          layout
           onMouseMove={handleMouseMove}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={handleMouseLeave}
-          onClick={!isExpanded ? handleOpen : undefined}
+          onClick={handleOpen}
           transition={{
-            layout: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
-            rotateX: { duration: 0.3, ease: "easeOut" },
-            rotateY: { duration: 0.3, ease: "easeOut" },
-            x: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
-            y: { duration: 0.6, ease: [0.4, 0, 0.2, 1] }
+            rotateX: { duration: 0.25, ease: "easeOut" },
+            rotateY: { duration: 0.25, ease: "easeOut" },
+            scale: { duration: 0.25 }
           }}
           animate={{
-            rotateX: isExpanded ? 0 : tilt.x,
-            rotateY: isExpanded ? 0 : tilt.y,
-            z: isHovered && !isExpanded ? 30 : 0,
-            x: isExpanded ? "-50%" : 0,
-            y: isExpanded ? "-50%" : 0
+            rotateX: tilt.x,
+            rotateY: tilt.y,
+            scale: isHovered ? 1.02 : 1,
+            z: isHovered ? 20 : 0
           }}
           style={{ transformStyle: "preserve-3d" }}
-          className={`group rounded-2xl ${
-            !isExpanded 
-              ? 'absolute top-0 left-0 w-full h-full cursor-pointer z-10' 
-              : 'fixed top-[50%] left-[50%] w-[90vw] md:w-[75vw] h-[75vh] cursor-default z-50'
-          }`}
+          className="group relative w-full h-full cursor-pointer rounded-2xl select-none"
         >
-          {/* Intense Warm/Electric Glow Effect (Pushed behind in 3D) */}
+          {/* Intense Glow Effect (Pushed behind in 3D) */}
           <motion.div
             animate={{
-              opacity: isExpanded ? 0.4 : (isHovered ? 0.9 : 0.5),
-              scale: isExpanded ? 1.05 : (isHovered ? 1.15 : 1)
+              opacity: isHovered ? 0.85 : 0.45,
+              scale: isHovered ? 1.08 : 1
             }}
             transition={{ duration: 0.3 }}
-            className={`absolute inset-0 rounded-2xl ${
-              isExpanded ? 'blur-[60px]' : 'blur-[40px]'
-            }`}
+            className="absolute inset-0 rounded-2xl blur-[35px]"
             style={{ 
               backgroundColor: glowColor,
               transform: 'translateZ(-10px)' 
             }}
           />
 
-          {/* Video Element Wrapper */}
+          {/* Video Element Card Wrapper */}
           <div 
-            className="relative w-full h-full overflow-hidden rounded-2xl bg-black border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+            className="relative w-full h-full overflow-hidden rounded-2xl bg-[#0d0e10] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.6)]"
             style={{ transform: 'translateZ(1px)' }}
           >
-            {badge && !isExpanded && (
-              <div className="absolute top-3 left-3 z-30 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-geist font-semibold text-white/90 uppercase tracking-widest pointer-events-none">
+            {badge && (
+              <div className="absolute top-3 left-3 z-30 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-[10px] font-geist font-semibold text-white/90 uppercase tracking-widest pointer-events-none shadow-md">
                 {badge}
               </div>
             )}
 
+            {/* Inline Preview Video */}
             <video
-              ref={videoRef}
+              ref={previewVideoRef}
               src={src}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover brightness-95 group-hover:brightness-105 transition-all duration-300"
               preload="metadata"
-              onEnded={handleClose}
-              controls={isExpanded}
               playsInline
+              muted
             />
 
             {/* Play Button Overlay (Idle Thumbnail) */}
-            <AnimatePresence>
-              {!isExpanded && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors pointer-events-none gap-2"
-                >
-                  <button
-                    aria-label={label}
-                    className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 text-white shadow-lg pointer-events-none transition-transform duration-300 group-hover:scale-110"
-                  >
-                    <Play className="w-6 h-6 ml-1 drop-shadow-md" fill="currentColor" />
-                  </button>
-                  <span className="text-[11px] font-geist font-medium text-white/80 tracking-wider uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                    {label}
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Close Button (Expanded State) */}
-            <AnimatePresence>
-              {isExpanded && (
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ delay: 0.3 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleClose();
-                  }}
-                  className="absolute top-4 right-4 md:top-6 md:right-6 z-50 w-12 h-12 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center text-white border border-white/20 hover:bg-white/20 transition-colors cursor-pointer shadow-lg"
-                >
-                  <X className="w-6 h-6" />
-                </motion.button>
-              )}
-            </AnimatePresence>
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/35 group-hover:bg-black/15 transition-colors pointer-events-none gap-2.5">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/40 text-white shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-brand-orange group-hover:border-brand-orange">
+                <Play className="w-6 h-6 sm:w-7 sm:h-7 ml-1 drop-shadow-md text-white" fill="currentColor" />
+              </div>
+              <span className="text-[11px] sm:text-xs font-geist font-semibold text-white tracking-wider uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">
+                {label}
+              </span>
+            </div>
           </div>
         </motion.div>
       </div>
+
+      {/* 
+        Full-Screen Centered Video Modal (Portaled directly to document.body)
+        Esto garantiza que se reproduzca en el CENTRO EXACTO de la landing page,
+        sin verse afectado por ningún transform, perspective o columna de la página.
+      */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isExpanded && (
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 md:p-10">
+              {/* Backdrop oscuro con blur */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 bg-black/90 backdrop-blur-md cursor-pointer"
+                onClick={handleClose}
+                aria-label="Cerrar reproductor"
+              />
+
+              {/* Contenedor del video centrado en pantalla que se hace grande desde pequeño */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.45 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.45 }}
+                transition={{ type: "spring", damping: 25, stiffness: 280 }}
+                className="relative z-10 w-full max-w-5xl max-h-[85vh] aspect-video flex flex-col rounded-2xl overflow-hidden bg-black border border-white/20 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)]"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Resplandor ambiental centrado */}
+                <div 
+                  className="absolute -inset-1 rounded-2xl blur-[60px] opacity-40 pointer-events-none"
+                  style={{ backgroundColor: glowColor }}
+                  aria-hidden="true"
+                />
+
+                {/* Barra superior transparente con botón de cerrar transparente (solo la 'X' blanca semitransparente) */}
+                <div className="absolute top-0 inset-x-0 z-30 p-3 sm:p-5 flex items-center justify-between pointer-events-none bg-transparent">
+                  {badge ? (
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 text-xs font-geist font-semibold text-white/90 tracking-widest uppercase shadow-md">
+                      <Volume2 className="w-3.5 h-3.5 text-brand-orange" />
+                      <span>{badge}</span>
+                    </div>
+                  ) : <div />}
+
+                  <button
+                    onClick={handleClose}
+                    className="pointer-events-auto p-2 bg-transparent hover:bg-transparent border-0 text-white/60 hover:text-white transition-all cursor-pointer hover:scale-110 active:scale-95 focus:outline-none ml-auto"
+                    aria-label="Cerrar video"
+                  >
+                    <X className="w-7 h-7 sm:w-8 sm:h-8 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] stroke-[2.2]" />
+                  </button>
+                </div>
+
+                {/* Reproductor de Video con controles y sonido activo */}
+                <div className="relative w-full h-full flex items-center justify-center bg-black">
+                  <video
+                    ref={modalVideoRef}
+                    src={src}
+                    controls
+                    autoPlay
+                    playsInline
+                    preload="auto"
+                    onEnded={handleClose}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   );
 }
+
