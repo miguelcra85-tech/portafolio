@@ -55,3 +55,9 @@ export const VIDEO_URL = "https://res.cloudinary.com/hw31kdln/video/upload/v1789
 export const HEADER_VIDEO_URL = "https://res.cloudinary.com/hw31kdln/video/upload/v1790300834/Contenido-1_vilwyp.mp4";
 export const PRESENTATION_VIDEO_URL = "https://res.cloudinary.com/hw31kdln/video/upload/v1790005612/Presentaci%C3%B3n_Animaci%C3%B3n_s3ukg4.mp4";
 
+/**
+ * Enlace directo al entorno interactivo y casos prácticos de Meta Ads & Google Ads
+ */
+export const ADS_ENVIRONMENT_URL = "https://digymik.vercel.app";
+
+
