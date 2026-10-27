@@ -1,6 +1,6 @@
 {
-  "summary":  "Plan de implementación para la cabecera ejecutiva con tipografía flotante de alto impacto para reclutadores y botón esmerilado con stencil knockout transparente.",
-  "updatedAt":  "2026-10-25T05:21:20.961404708Z",
+  "summary":  "Resumen de implementación del contorno exterior naranja en las letras del botón 'Ver Flujo', preservando el recorte 100% transparente para el video de fondo sin invadir el interior de las letras.",
+  "updatedAt":  "2026-10-27T20:55:26.199420636Z",
   "requestFeedback":  true,
   "userFacing":  true
 }
