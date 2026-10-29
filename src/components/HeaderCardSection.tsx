@@ -95,7 +95,7 @@ export function HeaderCardSection() {
                 />
 
                 <a
-                  href="https://miguelcra85-tech.github.io/Google-ai-studio-Migue-Novedades/"
+                  href="https://novaai-commerce.vercel.app/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="relative inline-flex items-center justify-center p-[2px] rounded-full overflow-hidden group/cases hover:scale-[1.03] active:scale-[0.98] transition-transform duration-300 shadow-[0_0_18px_rgba(16,185,129,0.35)] hover:shadow-[0_0_25px_rgba(0,229,255,0.6)] cursor-pointer"
