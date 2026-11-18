@@ -28,8 +28,10 @@ export default function App() {
             muted 
             playsInline 
             preload="auto"
+            controlsList="nodownload"
             disablePictureInPicture
             disableRemotePlayback
+            onContextMenu={(e) => e.preventDefault()}
             className="w-full h-full object-cover object-center opacity-100 brightness-100 contrast-125 saturate-135 origin-center scale-[0.95] transition-transform duration-700"
             style={{ transform: 'scale(0.95)' }}
           >

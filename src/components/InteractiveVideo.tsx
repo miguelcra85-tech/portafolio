@@ -148,6 +148,7 @@ export function InteractiveVideo({
           <div 
             className="relative w-full h-full overflow-hidden rounded-2xl bg-[#0d0e10] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.6)]"
             style={{ transform: 'translateZ(1px)' }}
+            onContextMenu={(e) => e.preventDefault()}
           >
             {badge && (
               <div className="absolute top-3 left-3 z-30 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-[10px] font-geist font-semibold text-white/90 uppercase tracking-widest pointer-events-none shadow-md">
@@ -163,6 +164,10 @@ export function InteractiveVideo({
               preload="metadata"
               playsInline
               muted
+              controlsList="nodownload"
+              disablePictureInPicture
+              disableRemotePlayback
+              onContextMenu={(e) => e.preventDefault()}
             />
 
             {/* Play Button Overlay (Idle Thumbnail) */}
@@ -232,15 +237,22 @@ export function InteractiveVideo({
                   </button>
                 </div>
 
-                {/* Reproductor de Video con controles y sonido activo */}
-                <div className="relative w-full h-full flex items-center justify-center bg-black">
+                {/* Reproductor de Video con controles y sonido activo (sin opción de descarga) */}
+                <div
+                  className="relative w-full h-full flex items-center justify-center bg-black"
+                  onContextMenu={(e) => e.preventDefault()}
+                >
                   <video
                     ref={modalVideoRef}
                     src={src}
                     controls
+                    controlsList="nodownload"
+                    disablePictureInPicture
+                    disableRemotePlayback
                     autoPlay
                     playsInline
                     preload="auto"
+                    onContextMenu={(e) => e.preventDefault()}
                     onEnded={handleClose}
                     className="w-full h-full object-contain"
                   />
